@@ -1,2 +1,4 @@
 data/
 toxic_comments/
+bert_model/
+__pycache__/
