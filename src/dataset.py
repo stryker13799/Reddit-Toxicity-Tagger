@@ -39,7 +39,7 @@ class ToxicityDataset(Dataset):
         
         ## Processing the output labels
         labels = [toxicity,severe_toxicity,obscene,identity_attack,insult,threat]
-        labels = torch.tensor(labels).long()
+        labels = torch.tensor(labels,dtype=torch.float32)
         
         ## returning the result
         return {"input":input_tensors,"labels":labels}

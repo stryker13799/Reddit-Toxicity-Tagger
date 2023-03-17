@@ -23,6 +23,11 @@ class ToxicityModel(nn.Module):
         x = self.dropout(self.l1(x))
         x = self.toxicity(x)
         
-        return x
+        return torch.sigmoid(x)
         
-
+    def training_step(self,input,label,loss_fn):
+    
+        out = self(**input)
+        loss = loss_fn(out,label)
+        
+        return loss
