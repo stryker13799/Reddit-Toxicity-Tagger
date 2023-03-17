@@ -4,15 +4,17 @@ import torch.nn as nn
 
 
 class ToxicityModel(nn.Module):
-    def __init__(self, bert_model_path):
+    def __init__(self, bert_model):
         super(ToxicityModel,self).__init__()
         
-        self.bert_model = BertModel.from_pretrained(bert_model_path)
+        self.bert_model = bert_model
         self.l1 = nn.Linear(768,256)  ## Reducing the Vector Dimension
         self.dropout = nn.Dropout(0.2)
         
         ## ['target','severe_toxicity', 'obscene', 'identity_attack', 'insult', 'threat']
         self.toxicity = nn.Linear(256,6)  ## 6 classes
+        
+        self.bert_model.train() ## Setting up bertModel in training mode by default
         
     def forward(self,**kwargs):
         

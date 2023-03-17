@@ -1,4 +1,6 @@
 data/
 toxic_comments/
-bert_model/
+bert_model/pytorch_model.bin
 __pycache__/
+mlruns/
+.vector_cache/

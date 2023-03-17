@@ -1,4 +1,4 @@
-from transformers import BertTokenizer
+from transformers import BertTokenizer,BertModel,BertConfig
 import config
 from model import ToxicityModel
 from dataset  import ToxicityDataset
@@ -7,12 +7,17 @@ import torch
 ##Initializing the tokenizer
 tokenizer = BertTokenizer.from_pretrained(config.bert_model_path,do_lower = True)
 
+
 ## Initialzing the the model
-model = ToxicityModel(config.bert_model_path)
+bert_config = BertConfig.from_pretrained(config.bert_model_path)
+bert_model = BertModel(config = bert_config)
+model = ToxicityModel(bert_model=bert_model)
+
 
 ## Intializing the dataset class
 sample_dataset = ToxicityDataset(tokenizer=tokenizer,data_path=config.test_data_path,\
                                     max_length=config.max_length)
+
 
 ## testing the dataset class
 out = sample_dataset[0]
