@@ -19,7 +19,7 @@ class ToxicityDataset(Dataset):
         item = self.data.iloc[idx]
         
         ## The input comment text
-        comment_text = item['comment_text']
+        comment_text = str(item['comment_text'])
         
         ## The output labels
         toxicity = item['target_label']

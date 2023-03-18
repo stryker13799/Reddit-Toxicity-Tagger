@@ -7,15 +7,36 @@ from torch.utils.data import DataLoader
 import torch
 import torch.nn as nn
 from tqdm import tqdm
+from utils import evaluate
+import random
+import numpy as np
+import os
+
+def set_seed(seed: int = 42) -> None:
+
+    np.random.seed(seed)
+    random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    # When running on the CuDNN backend, two further options must be set
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+    # Set a fixed value for the hash seed
+    os.environ["PYTHONHASHSEED"] = str(seed)
+    print(f"Random seed set as {seed}")
+
 
 def train():
+    
+    ########### Setting the seed value ############
+    set_seed(config.seed)
     
     ########### Setting the device #################
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
 
     ########### Setting up the tokenizer
-    tokenizer = BertTokenizer.from_pretrained(config.bert_model_path)
+    tokenizer = BertTokenizer.from_pretrained(config.bert_model_path,do_lower = True)
     
     
     ########### Loading dataloaders
@@ -63,12 +84,13 @@ def train():
     
     log_train_loss = []
     log_val_loss = []
-    best_loss = -999
+    best_loss = 999
 
     for epoch in range(config.epochs):
         
         train_losses = 0
-        valid_losses = 0 
+        valid_losses = 0
+        idx = 0 
         model.train()
         for batch in tqdm(train_dataloader):
             
@@ -84,6 +106,11 @@ def train():
             
             train_losses+=loss.detach().cpu().item()
             
+            ### logging learning rate
+            mlflow.log_metrics({
+                    "lr":optimizer.param_groups[0]['lr']
+            },step = idx)
+            idx+=1
             
         log_train_loss.append(train_losses/len(train_dataloader))
 
@@ -103,13 +130,37 @@ def train():
             best_loss = log_val_loss[-1]
             torch.save(model.parameters(),"../model/best.pt")
 
-        if (epoch % 5 == 0):
-            print(f"Epochs :{epoch}  ->  Train loss : {log_train_loss[-1]}  Valid loss : {log_val_loss[-1]}")
+        # Display the losses for each epoch (since epochs are less we'll print for every epoch)
+        print(f"Epochs :{epoch}  ->  Train loss : {log_train_loss[-1]}  Valid loss : {log_val_loss[-1]}")
            
         ### logging mlflow
         mlflow.log_metrics({
-                    "train_loss":log_train_loss[-1],"valid_loss":log_val_loss[-1]
+                    "train_loss":log_train_loss[-1],"valid_loss":log_val_loss[-1],"lr":optimizer.param_groups[0]['lr']
                             },step = epoch)
+  
+    
+    ###### Evaluating the trained model ##################################
+    eval_dataset = ToxicityDataset(config.test_data_path,tokenizer=tokenizer)
+    eval_dataloader = DataLoader(eval_dataset,batch_size=config.batch_size)
+    
+    ### Eval loop
+    f1_avg = 0
+    accuracy_avg = 0
+    
+    model.eval()
+    for batch in tqdm(eval_dataloader, desc="Evaluation"):
+        
+        batch['input'] = {k:v.to(device) for k,v in batch['input'].items()}
+        batch['labels'] = batch['labels'].to(device)  
+
+        out = model(**batch['input'])
+        
+        accuracy,f1 = evaluate(out.detach(),batch['labels'].detach(),config.threshold)
+        accuracy_avg+=accuracy
+        f1_avg+=f1
+        
+    mlflow.log_metrics({"test_f1":f1_avg/len(eval_dataloader),"test_accuracy":accuracy_avg/len(eval_dataloader)})
+    
     
     history = {"train":log_train_loss,"valid":log_val_loss}
     
@@ -120,7 +171,7 @@ if __name__ == "__main__":
     
     mlflow.set_experiment("testing1")
     with mlflow.start_run():
-        train()
+        history = train()
         mlflow.log_artifacts("../model","best_weights")
             
     
