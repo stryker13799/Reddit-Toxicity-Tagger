@@ -4,3 +4,4 @@ bert_model/pytorch_model.bin
 __pycache__/
 mlruns/
 .vector_cache/
+aws.csv

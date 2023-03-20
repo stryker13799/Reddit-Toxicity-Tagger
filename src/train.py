@@ -54,7 +54,7 @@ def train():
     model = ToxicityModel(bert_model=bert_model)
     model.to(device)
     print(f"Model moved to {device}")
-    
+    torch.save(model.state_dict(),"../model/best.pt")
     ########### Setting up the optimizer and scheduler
     optimizer = torch.optim.Adam(model.parameters(),lr = config.lr)
     
@@ -128,7 +128,7 @@ def train():
 
         if log_val_loss[-1] < best_loss:
             best_loss = log_val_loss[-1]
-            torch.save(model.parameters(),"../model/best.pt")
+            torch.save(model.state_dict(),"../model/best.pt")
 
         # Display the losses for each epoch (since epochs are less we'll print for every epoch)
         print(f"Epochs :{epoch}  ->  Train loss : {log_train_loss[-1]}  Valid loss : {log_val_loss[-1]}")
