@@ -5,3 +5,4 @@ __pycache__/
 mlruns/
 .vector_cache/
 aws.csv
+model

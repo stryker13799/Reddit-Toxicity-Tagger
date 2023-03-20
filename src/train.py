@@ -54,7 +54,7 @@ def train():
     model = ToxicityModel(bert_model=bert_model)
     model.to(device)
     print(f"Model moved to {device}")
-    torch.save(model.state_dict(),"../model/best.pt")
+    
     ########### Setting up the optimizer and scheduler
     optimizer = torch.optim.Adam(model.parameters(),lr = config.lr)
     
