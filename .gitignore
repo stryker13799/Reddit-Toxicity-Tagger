@@ -6,3 +6,4 @@ mlruns/
 .vector_cache/
 aws.csv
 model
+model1
