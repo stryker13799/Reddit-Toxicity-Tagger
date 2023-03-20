@@ -1,0 +1,9 @@
+data/
+mlruns/
+model/
+model1/
+notebooks/
+toxic_comments/
+aws.csv/
+.gitignore
+__pycache__
