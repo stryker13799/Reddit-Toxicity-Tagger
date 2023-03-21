@@ -1,4 +1,4 @@
-FROM python:3.8-slim-buster
+FROM python:3.8.0-slim-buster
 
 ## Updating the os
 RUN apt-get update
@@ -8,6 +8,9 @@ WORKDIR /APP
 
 ## Copy everything to the working directory
 COPY . /APP
+
+## Running upgrade
+RUN pip install --upgrade pip
 
 ## Running the requirements
 RUN python -m pip install -r requirements.txt

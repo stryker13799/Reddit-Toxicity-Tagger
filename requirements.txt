@@ -86,7 +86,6 @@ PyJWT==2.6.0
 pyparsing==3.0.9
 python-dateutil==2.8.2
 pytz==2022.7.1
-pywin32==305
 PyYAML==6.0
 pyzmq==25.0.0
 querystring-parser==1.2.4
@@ -112,15 +111,14 @@ tensorboard-data-server==0.6.1
 tensorboard-plugin-wit==1.8.1
 tensorflow==2.11.0
 tensorflow-estimator==2.11.0
-tensorflow-intel==2.11.0
 tensorflow-io-gcs-filesystem==0.31.0
 termcolor==2.2.0
 threadpoolctl==3.1.0
 tokenizers==0.13.2
-torch==1.13.1+cu116
-torchaudio==0.13.1+cu116
+torch==1.13.1
+torchaudio==0.13.1
 torchtext==0.14.1
-torchvision==0.14.1+cu116
+torchvision==0.14.1
 tornado==6.2
 tqdm==4.64.1
 traitlets==5.9.0
