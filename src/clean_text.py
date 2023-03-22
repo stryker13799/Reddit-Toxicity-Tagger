@@ -1,4 +1,3 @@
-
 ##################################################################### Removing Unnecessary Symbols #########################################################
 
 latin_similar = """’'‘ÆÐƎƏƐƔĲŊŒẞÞǷȜæðǝəɛɣĳŋœĸſßþƿȝĄƁÇĐƊĘĦĮƘŁØƠŞ
@@ -40,8 +39,9 @@ SYMBOLS_TO_ISOLATE = """.,?!-;*"…:—()%#$&_/@＼・ω+=”“[]^–>\°<~\xa0
 ┳┊≥☒↑☝ɹ✅☛♩☞ＡＪＢ◔◡↓♀⬆̱ℏ\x91⠀ˤ╚↺⇤∏✾◦♬³の｜／∵∴√Ω¤☜▲↳▫‿⬇✧ｏｖｍ－２０８＇‰≤∕ˆ⚜☁
 """
 
-isolate_dict = {ord(c):f' {c} ' for c in SYMBOLS_TO_ISOLATE}
-remove_dict = {ord(c):f'' for c in SYMBOLS_TO_DELETE}
+isolate_dict = {ord(c): f" {c} " for c in SYMBOLS_TO_ISOLATE}
+remove_dict = {ord(c): f"" for c in SYMBOLS_TO_DELETE}
+
 
 def handle_symbols(x):
     x = x.translate(remove_dict)
@@ -49,10 +49,12 @@ def handle_symbols(x):
     return x
 
 
-
 ######################################################### Handle Contractions ########################################################################################
 from nltk.tokenize.treebank import TreebankWordTokenizer
+
 treebank_tokenizer = TreebankWordTokenizer()
+
+
 def handle_contractions(x):
     x = treebank_tokenizer.tokenize(x)
     return x
@@ -61,16 +63,16 @@ def handle_contractions(x):
 ######################################################### Handle Apostrophe at the start##########################################################################
 def fix_quote(x):
     x = [x_[1:] if x_.startswith("'") else x_ for x_ in x]
-    x = ' '.join(x)
+    x = " ".join(x)
     return x
 
 
 ####################################################### Preprocess the text ####################################################################################3
 
+
 def preprocess_text(text):
-    
     text = handle_symbols(text)
     text = handle_contractions(text)
     text = fix_quote(text)
-    
+
     return text
