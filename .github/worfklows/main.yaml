@@ -1,0 +1,27 @@
+name: Python Code Analysis
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  code-analysis:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python environment
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+        
+      - name: Install pylint
+        run: pip install pylint
+
+      - name: Run Pylint
+        run: pylint $(git ls-files '*.py')
+       
