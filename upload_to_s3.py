@@ -2,16 +2,13 @@ import boto3
 import os
 
 
-ACCESS_KEY = 'AKIAW3CEOBGF6VFBIC7S'
-SECRET_KEY = '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'
+ACCESS_KEY = "AKIAW3CEOBGF6VFBIC7S"
+SECRET_KEY = "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"
 bucket_name = "toxic-comments19032023"
-session = boto3.Session(
-    aws_access_key_id=ACCESS_KEY, 
-    aws_secret_access_key=SECRET_KEY
-)
+session = boto3.Session(aws_access_key_id=ACCESS_KEY, aws_secret_access_key=SECRET_KEY)
 
 
-def upload_file(session,file_name, bucket, object_name=None):
+def upload_file(session, file_name, bucket, object_name=None):
     """Upload a file to an S3 bucket
 
     :param file_name: File to upload
@@ -25,9 +22,9 @@ def upload_file(session,file_name, bucket, object_name=None):
         object_name = os.path.basename(file_name)
 
     # Upload the file
-    s3_client = session.client('s3')
+    s3_client = session.client("s3")
     try:
-         response = s3_client.upload_file(file_name, bucket, object_name)
+        response = s3_client.upload_file(file_name, bucket, object_name)
     except:
         print(f"Couldn't upload the file")
         return "Failed"
@@ -35,4 +32,4 @@ def upload_file(session,file_name, bucket, object_name=None):
     return "Upload success"
 
 
-print(upload_file(session,"../model/best.pt",bucket_name,"best_weights"))
+print(upload_file(session, "../model/best.pt", bucket_name, "best_weights"))
