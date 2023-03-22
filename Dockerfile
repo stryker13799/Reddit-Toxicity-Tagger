@@ -13,7 +13,7 @@ COPY . /APP
 RUN pip install --upgrade pip
 
 ## Running the requirements
-RUN python -m pip install -r requirements.txt
+RUN python -m pip install --default-timeout=100 -r requirements.txt
 
 ## Exposing the port
 EXPOSE 5000

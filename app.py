@@ -43,7 +43,7 @@ bert_model = BertModel(config = bert_config)
 model = ToxicityModel(bert_model=bert_model)
 
 ## Loading the weights
-model.load_state_dict(torch.load(filename + "best_weights.pt"))
+model.load_state_dict(torch.load(filename + "best_weights.pt",map_location = torch.device("cpu")))
 
 ###########################  Setting up the FlaskApplication #########################################
 app = Flask(__name__)
